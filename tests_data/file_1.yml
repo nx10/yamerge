@@ -1,0 +1,6 @@
+foo:
+  MERGE: file_2.yml
+  a: 1
+  b: 7
+  x:
+    y: baz

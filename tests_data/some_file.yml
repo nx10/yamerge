@@ -1,0 +1,10 @@
+steps:
+  - step-1:
+    a: 1
+    b: 1
+  - step-2:
+    MERGE-SNIPPET: some_snippet.yml
+    a: 0
+  - step-3:
+    a: hello
+    b: hi

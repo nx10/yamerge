@@ -1,0 +1,7 @@
+foo:
+  b: 999
+  c: 42
+  x:
+    z: bar
+
+this_will_not_be_merged: because MERGE was nested under 'foo'

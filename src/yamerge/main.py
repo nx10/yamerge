@@ -8,7 +8,7 @@ from yamerge.transformers import AbsoluteMergeTransformerGenerator, RelativeMerg
 def _cli_parse_args():
     parser = argparse.ArgumentParser(description="Preprocessor for YAML files. Merge data from other YAML files "
                                                  "via tags: `MERGE: file/path.yml` (absolute / same YAML structure)  "
-                                                 "`MERGE-SNIPPET: path/to/snippet.yml` (relative / insert full yaml).")
+                                                 "`MERGE-SNIPPET: path/to/snippet.yml` (relative / merge full YAML).")
     parser.add_argument('input', type=str, help='YAML input filepath')
     parser.add_argument('-o', '--output', type=str,
                         help='YAML output filepath (If this is not specified result will be printed to console)')
