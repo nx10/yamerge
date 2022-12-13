@@ -1,3 +1,5 @@
+from math import pi
+
 from yamerge.engine import TransformerSystem
 from yamerge.transformers import AbsoluteMergeTransformerGenerator, RelativeMergeTransformerGenerator
 from yamerge.yaml_access import load_yaml_file
@@ -19,8 +21,6 @@ def test_absolute_merge():
 
 
 def test_relative_merge():
-    from math import pi
-
     yaml_data = load_yaml_file('tests_data/some_file.yml')
 
     search_paths = ['tests_data']
