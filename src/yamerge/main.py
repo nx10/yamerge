@@ -45,7 +45,7 @@ def main():
     if cli_args.output is None:
         print(save_yaml_str(yaml_data))
     else:
-        save_yaml_file(cli_args.output, yaml_data)
+        save_yaml_file(yaml_data, cli_args.output)
 
 
 if __name__ == '__main__':
