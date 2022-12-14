@@ -1,12 +1,12 @@
-from math import pi
 import pathlib as pl
+from math import pi
 
 from yamerge.engine import TransformerSystem
 from yamerge.transformers import AbsoluteMergeTransformerGenerator, RelativeMergeTransformerGenerator
 from yamerge.yaml_access import load_yaml_file
 
-
 DIR_DATA = pl.Path('tests_data')
+
 
 def test_absolute_merge():
     yaml_data = load_yaml_file(DIR_DATA / 'file_1.yml')
@@ -38,7 +38,6 @@ def test_relative_merge():
 
 
 def test_merge_order():
-
     yaml_data = load_yaml_file(DIR_DATA / 'merge_order_1.yml')
 
     search_paths = [DIR_DATA]
