@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from os import PathLike
 from typing import Optional, List, Generator, Union
 
-from yamerge.engine import Transformer, TransformerGenerator
+from yamerge.engine import Transformer, TransformerGenerator, TransformerSystem
 from ..core import YamlData, yaml_backref_indices, yaml_backref_depth, iter_yaml_data_bfs, YamlBackRef
 from ..yaml_access import load_yaml_file
 
@@ -52,7 +52,7 @@ class MergeTransformer(Transformer[YamlData], ABC):
     def precedence(self) -> int:
         return self.generator.base_precedence + self.depth
 
-    def apply(self, obj: YamlData) -> YamlData:
+    def apply(self, obj: YamlData, sys: TransformerSystem) -> YamlData:
         merge_filename = self.br.element[self.generator.merge_tag_name]
         del self.br.element[self.generator.merge_tag_name]
 
@@ -63,6 +63,7 @@ class MergeTransformer(Transformer[YamlData], ABC):
             raise Exception(f'File not found: {merge_filename}')
 
         merge_yaml = load_yaml_file(merge_filepath)
+        merge_yaml = sys.apply(merge_yaml)  # resolve dependency yaml first
 
         self._merge(obj, merge_yaml, self.br)
 
@@ -78,7 +79,7 @@ class MergeTransformerGenerator(TransformerGenerator[YamlData], ABC):
     def __init__(
             self,
             merge_tag_name: str,
-            paths: Optional[List[str]] = None,
+            paths: Optional[List[Union[str, PathLike]]] = None,
             base_precedence: int = 1000,
             max_apply: int = 1000
     ):
@@ -88,7 +89,7 @@ class MergeTransformerGenerator(TransformerGenerator[YamlData], ABC):
         self.max_apply = max_apply
         self.num_apply = 0
 
-    def match(self, obj: YamlData) -> Generator[MergeTransformer, None, None]:
+    def match(self, obj: YamlData, sys: TransformerSystem) -> Generator[MergeTransformer, None, None]:
         for br in iter_yaml_data_bfs(obj):
             if isinstance(br.element, dict) and self.merge_tag_name in br.element.keys():
                 if self.num_apply > self.max_apply:

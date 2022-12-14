@@ -1,6 +1,6 @@
 from typing import Generator
 
-from yamerge.engine import Transformer, TransformerGenerator
+from yamerge.engine import Transformer, TransformerGenerator, TransformerSystem
 from ..core import YamlData, iter_yaml_data_bfs
 
 
@@ -12,7 +12,7 @@ class RenameTagTransformer(Transformer[YamlData]):
     def precedence(self) -> int:
         return self.generator.precedence
 
-    def apply(self, obj: YamlData) -> YamlData:
+    def apply(self, obj: YamlData, sys: TransformerSystem) -> YamlData:
         self.tag_dict[self.generator.rename_to] = self.tag_dict.pop(self.generator.rename_from)
         return obj
 
@@ -24,7 +24,7 @@ class RenameTagTransformerGenerator(TransformerGenerator[YamlData]):
         self.rename_to = rename_to
         self.precedence = precedence
 
-    def match(self, obj: YamlData) -> Generator[YamlData, None, None]:
+    def match(self, obj: YamlData, sys: TransformerSystem) -> Generator[YamlData, None, None]:
         for br in iter_yaml_data_bfs(obj):
             if isinstance(br.element, dict) and self.rename_from in br.element:
                 yield RenameTagTransformer(self, br.element)

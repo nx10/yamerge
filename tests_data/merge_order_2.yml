@@ -1,0 +1,5 @@
+MERGE: merge_order_3.yml
+a:
+  b:
+    c:
+      y: 2

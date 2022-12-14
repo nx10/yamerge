@@ -1,0 +1,5 @@
+a:
+  b:
+    c:
+      MERGE: merge_order_2.yml
+      x: 1

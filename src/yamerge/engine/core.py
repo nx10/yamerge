@@ -14,7 +14,7 @@ class Transformer(ABC, Generic[T]):
         return 0
 
     @abstractmethod
-    def apply(self, obj: T) -> T:
+    def apply(self, obj: T, sys: 'TransformerSystem') -> T:
         pass
 
 
@@ -25,7 +25,7 @@ class TransformerGenerator(ABC, Generic[T]):
     """
 
     @abstractmethod
-    def match(self, obj: T) -> Generator[Transformer[T], None, None]:
+    def match(self, obj: T, sys: 'TransformerSystem') -> Generator[Transformer[T], None, None]:
         pass
 
 
@@ -41,7 +41,7 @@ class TransformerSystem(Generic[T]):
 
     def _iter_matches(self, obj: T):
         for generator in self._generators:
-            yield from generator.match(obj)
+            yield from generator.match(obj, self)
 
     def apply(self, obj: T):
         while True:
@@ -49,5 +49,5 @@ class TransformerSystem(Generic[T]):
             if len(transformers) == 0:
                 break
             best = max(transformers, key=lambda x: x.precedence())
-            obj = best.apply(obj)
+            obj = best.apply(obj, self)
         return obj

@@ -8,13 +8,13 @@ class AddOneTransformerGenerator(TransformerGenerator[int]):
     def __init__(self, max_value: int):
         self.max_value = max_value
 
-    def match(self, obj: int) -> Generator[Transformer[int], None, None]:
+    def match(self, obj: int, sys: TransformerSystem) -> Generator[Transformer[int], None, None]:
         if obj < self.max_value:
             yield AddOneTransformer()
 
 
 class AddOneTransformer(Transformer[int]):
-    def apply(self, obj: int) -> int:
+    def apply(self, obj: int, sys: TransformerSystem) -> int:
         return obj + 1
 
 

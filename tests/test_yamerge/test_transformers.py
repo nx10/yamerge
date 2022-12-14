@@ -1,14 +1,17 @@
 from math import pi
+import pathlib as pl
 
 from yamerge.engine import TransformerSystem
 from yamerge.transformers import AbsoluteMergeTransformerGenerator, RelativeMergeTransformerGenerator
 from yamerge.yaml_access import load_yaml_file
 
 
-def test_absolute_merge():
-    yaml_data = load_yaml_file('tests_data/file_1.yml')
+DIR_DATA = pl.Path('tests_data')
 
-    search_paths = ['tests_data']
+def test_absolute_merge():
+    yaml_data = load_yaml_file(DIR_DATA / 'file_1.yml')
+
+    search_paths = [DIR_DATA]
 
     yaml_data = TransformerSystem([
         AbsoluteMergeTransformerGenerator(merge_tag_name='MERGE', paths=search_paths),
@@ -21,9 +24,9 @@ def test_absolute_merge():
 
 
 def test_relative_merge():
-    yaml_data = load_yaml_file('tests_data/some_file.yml')
+    yaml_data = load_yaml_file(DIR_DATA / 'some_file.yml')
 
-    search_paths = ['tests_data']
+    search_paths = [DIR_DATA]
 
     yaml_data = TransformerSystem([
         AbsoluteMergeTransformerGenerator(merge_tag_name='MERGE', paths=search_paths),
@@ -32,3 +35,19 @@ def test_relative_merge():
 
     print(yaml_data)
     assert yaml_data['steps'][1]['b'] - pi < 1e-5
+
+
+def test_merge_order():
+
+    yaml_data = load_yaml_file(DIR_DATA / 'merge_order_1.yml')
+
+    search_paths = [DIR_DATA]
+
+    yaml_data = TransformerSystem([
+        AbsoluteMergeTransformerGenerator(merge_tag_name='MERGE', paths=search_paths),
+        RelativeMergeTransformerGenerator(merge_tag_name='MERGE-SNIPPET', paths=search_paths)
+    ]).apply(yaml_data)
+
+    assert yaml_data['a']['b']['c']['x'] == 1
+    assert yaml_data['a']['b']['c']['y'] == 2
+    assert yaml_data['a']['b']['c']['z'] == 3
